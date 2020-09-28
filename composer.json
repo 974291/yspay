@@ -1,0 +1,22 @@
+{
+    "name": "@aler/yspay",
+    "description": "The yspay Helper Package",
+    "license": "Apache-2.0",
+    "authors": [
+        {
+            "name": "aler",
+            "email": "974291@qq.com"
+        }
+    ],
+    "require": {
+        "php": ">=7.1.0"
+    },    
+    "autoload": {
+        "psr-4": {
+            "think\\": "src"
+        },
+        "files": [
+            "src/Yspay.php"
+        ]
+    }
+}
