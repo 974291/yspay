@@ -95,7 +95,6 @@ class Yspay implements Settings {
     protected $appid = '';
 
 
-
     /**
      * 银盛通微信小程序下单接口
      * ysepay.online.weixin.pay
