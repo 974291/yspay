@@ -2,7 +2,7 @@
 
 基于Thinkphp5.1+
 
-> 以下类库都在`\\@yspay\\yspay`命名空间下
+> 以下类库都在`\\aler\\yspay`命名空间下
 
 ## new Yspay
 
