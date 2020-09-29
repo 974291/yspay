@@ -5,44 +5,60 @@
  * Date: 2020/9/28
  * Time: 13:38
  */
+
 namespace aler\Yspay;
 
 class Yspay implements Settings {
 
     /**
-     * 配置参数
+     * 商户号
      */
-    private  $config = [];
+    private $seller_id = '';
 
-    // 构造函数
-    public function __construct($config) {
-        date_default_timezone_set('PRC');
-        if (!empty($config)) {
-            $this->method     = $config['method'];
-            $this->notify_url = url('/xcxapi/v1/ysepay', ['method' => 'get.notify.url'], false, true);
-        }
-        return false;
+    /**
+     * 商户名
+     */
+    private $seller_name = '';
 
-    }
+    /**
+     * 商户证书
+     */
+    private $cert = '';
 
-    public function Config() {
-        // TODO: Implement Config() method.
-    }
+    /**
+     * 商户key
+     */
+    private $key = '';
+
+    /**
+     * 商户证书key密码
+     */
+    private $key_password = '';
+
+    /**
+     * 业务代码
+     */
+    private $business_code = '';
+
+    /**
+     * 接口名称
+     */
+    private $method = '';
+
+    /**
+     * 异步通知回调url
+     */
+    private $notify_url = '';
+
+    /**
+     * 小程序appid
+     */
+    private $appid = '';
 
     /**
      * 正式环境请求地址
      */
     const PAYURL = 'https://qrcode.ysepay.com/gateway.do';
-
-    /**
-     * 商户号
-     */
-    const SELLER_ID = '';
-
-    /**
-     * 商户名
-     */
-    const SELLER_NAME = '';
 
     /**
      * 默认编码
@@ -59,41 +75,27 @@ class Yspay implements Settings {
      */
     const VERSION = '3.0';
 
-    /**
-     * 商户证书
-     */
-    const CERT = '/data/wwwroot/dev.yxgzhsh.com/web/extend/Ysepay/certs/businessgate.cer';
+    // 构造初始化
+    public function __construct($config) {
+        date_default_timezone_set('PRC');
+        if (!empty($config)) {
+            $this->method        = $config['method'];
+            $this->notify_url    = $config['url'];
+            $this->seller_id     = $config['seller_id'];
+            $this->seller_name   = $config['seller_name'];
+            $this->cert          = $config['cert'];
+            $this->key           = $config['key'];
+            $this->key_password  = $config['key_password'];
+            $this->business_code = $config['business_code'];
+            $this->appid         = $config['appid'];
+        }
 
+        throw new \Exception('Yspay Error');
+    }
 
-    /**
-     * 商户key
-     */
-    const KEY = '/data/wwwroot/dev.yxgzhsh.com/web/extend/Ysepay/certs/yxgcert.pfx';
-
-    /**
-     * 商户证书key密码
-     */
-    const KEY_PASSWORD = '123456';
-
-    /**
-     * 业务代码
-     */
-    const BUSINESS_CODE = '00510030';
-
-    /**
-     * 接口名称
-     */
-    protected $method = '';
-
-    /**
-     * 异步通知回调url
-     */
-    protected $notify_url = '';
-
-    /**
-     * 小程序appid
-     */
-    protected $appid = '';
+    public function Config(): array {
+        // TODO: Implement Config() method.
+    }
 
 
     /**
@@ -105,12 +107,12 @@ class Yspay implements Settings {
      */
     public function wechatPay($order, $openid, $total_amount) {
         $myParams                = [];
-        $myParams['charset']     = YsepayConfig::CHARSET;
+        $myParams['charset']     = self::CHARSET;
         $myParams['method']      = $this->method;
-        $myParams['partner_id']  = YsepayConfig::SELLER_ID;
-        $myParams['sign_type']   = YsepayConfig::SIGN_TYPE;
+        $myParams['partner_id']  = $this->seller_id;
+        $myParams['sign_type']   = self::SIGN_TYPE;
         $myParams['timestamp']   = date('Y-m-d H:i:s', time());
-        $myParams['version']     = YsepayConfig::VERSION;
+        $myParams['version']     = self::VERSION;
         $myParams['notify_url']  = $this->notify_url;
         $biz_content_arr         = [
             "out_trade_no"    => $order, //订单号
@@ -118,18 +120,17 @@ class Yspay implements Settings {
             "subject"         => "微信小程序下单接口", //交易标题
             "total_amount"    => $total_amount, //订单金额
             "currency"        => "CNY", //币种
-            "seller_id"       => YsepayConfig::SELLER_ID, //商户号
-            "seller_name"     => YsepayConfig::SELLER_NAME, //商户名
+            "seller_id"       => $this->seller_id, //商户号
+            "seller_name"     =>  $this->seller_name, //商户名
             "timeout_express" => "24h",
-            "business_code"   => YsepayConfig::BUSINESS_CODE,
+            "business_code"   => $this->business_code,
             "sub_openid"      => $openid,//用户关注公众号openid
             "is_minipg"       => 1, //小程序支付
             "appid"           => $this->appid //公众号appid
         ];
         $myParams['biz_content'] = json_encode($biz_content_arr, JSON_UNESCAPED_UNICODE);//构造字符串
-        trace($myParams, 'paylog');
         $myParams['sign'] = $this->sign($myParams);
-        return $this->postUrl(YsepayConfig::PAYURL, $myParams, 'ysepay_online_weixin_pay_response');
+        return $this->postUrl(self::PAYURL, $myParams, 'ysepay_online_weixin_pay_response');
     }
 
     /**
@@ -142,12 +143,12 @@ class Yspay implements Settings {
      */
     public function orderRefund($out_trade_no, $trade_no, $refund_amount, $refund_reason) {
         $myParams               = [];
-        $myParams['charset']    = YsepayConfig::CHARSET;
+        $myParams['charset']    = self::CHARSET;
         $myParams['method']     = $this->method;
-        $myParams['partner_id'] = YsepayConfig::SELLER_ID;
-        $myParams['sign_type']  = YsepayConfig::SIGN_TYPE;
+        $myParams['partner_id'] = $this->seller_id;
+        $myParams['sign_type']  = self::SIGN_TYPE;
         $myParams['timestamp']  = date('Y-m-d H:i:s', time());
-        $myParams['version']    = YsepayConfig::VERSION;
+        $myParams['version']    = self::VERSION;
 
         $biz_content_arr         = [
             "out_trade_no"   => $out_trade_no,
@@ -157,8 +158,8 @@ class Yspay implements Settings {
             "out_request_no" => 'RD' . $this->datetime2string(date('Y-m-d H:i:s'))
         ];
         $myParams['biz_content'] = json_encode($biz_content_arr, JSON_UNESCAPED_UNICODE);//构造字符串
-        $myParams['sign'] = $this->sign($myParams);
-        return $this->postUrl(YsepayConfig::PAYURL, $myParams, 'ysepay_online_trade_refund_response');
+        $myParams['sign']        = $this->sign($myParams);
+        return $this->postUrl(self::PAYURL, $myParams, 'ysepay_online_trade_refund_response');
     }
 
     /**
@@ -169,15 +170,15 @@ class Yspay implements Settings {
      */
     function division_query() {
         $myParams                = [];
-        $myParams['charset']     = YsepayConfig::CHARSET;
+        $myParams['charset']     = self::CHARSET;
         $myParams['method']      = $this->method;
-        $myParams['partner_id']  = YsepayConfig::SELLER_ID;
-        $myParams['sign_type']   = YsepayConfig::SIGN_TYPE;
+        $myParams['partner_id']  = $this->seller_id;
+        $myParams['sign_type']   = self::SIGN_TYPE;
         $myParams['timestamp']   = date('Y-m-d H:i:s', time());
-        $myParams['version']     = YsepayConfig::VERSION;
+        $myParams['version']     = self::VERSION;
         $myParams['notify_url']  = $this->notify_url;
         $biz_content             = [
-            "src_usercode" => YsepayConfig::SELLER_ID,
+            "src_usercode" => $this->seller_id,
             "out_batch_no" => "S" . date('YmdHis', time()),
             "out_trade_no" => $this->getOrderNo(time()),
             "sys_flag"     => "DD"
@@ -185,7 +186,7 @@ class Yspay implements Settings {
         $myParams['biz_content'] = json_encode($biz_content, JSON_UNESCAPED_UNICODE);//构造字符串
         $myParams['sign']        = $this->sign($myParams);
         var_dump($myParams);
-        $this->postUrl(YsepayConfig::PAYURL, $myParams, 'ysepay_single_division_online_query_response');
+        $this->postUrl(self::PAYURL, $myParams, 'ysepay_single_division_online_query_response');
     }
 
     /**
@@ -195,7 +196,7 @@ class Yspay implements Settings {
      * 输入参数：yyyy-MM-dd HH:mm:ss
      * 输出参数：yyyyMMddHHmmss
      */
-    protected function datetime2string($datetime) {
+    private static function datetime2string($datetime) {
         return preg_replace('/\-*\:*\s*/', '', $datetime);
     }
 
@@ -205,7 +206,7 @@ class Yspay implements Settings {
      * @DateTime 2020-07-28
      * @return   [type]                   [description]
      */
-    protected function getOrderNo($orderno) {
+    private static function getOrderNo($orderno) {
         $prefix = ['LC' => 10, 'DK' => 11, 'HK' => 12, 'FL' => 13, 'GZ' => 14, 'RE' => 15, 'RP' => 16, 'DJ' => 17, 'TX' => 18, 'DF' => 19, 'IG' => 20,];
         $p      = $prefix[substr($orderno, 0, 2)];
         if (!empty($p)) {
@@ -219,7 +220,7 @@ class Yspay implements Settings {
      * @Author   Aler.gl
      * @DateTime 2020-07-28
      */
-    protected function respondUrl($params) {
+    private function respondUrl($params) {
         //返回的数据处理
         @$sign = trim($params['sign']);
         $result = $params;
@@ -278,8 +279,8 @@ class Yspay implements Settings {
      * @param $data
      * @return   $success
      */
-    protected function signCheck($sign, $data) {
-        $certificateCAcerContent = file_get_contents(YsepayConfig::CERT);//公钥
+    private function signCheck($sign, $data) {
+        $certificateCAcerContent = file_get_contents($this->cert);//公钥
         $certificateCApemContent = '-----BEGIN CERTIFICATE-----' . PHP_EOL . chunk_split(base64_encode($certificateCAcerContent), 64, PHP_EOL) . '-----END CERTIFICATE-----' . PHP_EOL;
         //print_r("验签密钥" . $certificateCApemContent);
         // 签名验证
@@ -294,7 +295,7 @@ class Yspay implements Settings {
      * @DateTime 2020-07-29
      * @param input data
      */
-    protected function sign($data) {
+    private function sign($data) {
         ksort($data);
         $signStr = "";
         foreach ($data as $key => $val) {
@@ -314,10 +315,10 @@ class Yspay implements Settings {
      * @return check
      * @return msg
      */
-    protected function sign_encrypt($input) {
+    private function sign_encrypt($input) {
         $return = ['success' => 0, 'msg' => '', 'check' => ''];
-        $pkcs12 = file_get_contents(YsepayConfig::KEY);
-        if (openssl_pkcs12_read($pkcs12, $certs, YsepayConfig::KEY_PASSWORD)) {
+        $pkcs12 = file_get_contents($this->key);
+        if (openssl_pkcs12_read($pkcs12, $certs, $this->key_password)) {
             //var_dump('证书,密码,正确读取');
             $privateKey = $certs['pkey'];
             $publicKey  = $certs['cert'];
@@ -342,7 +343,7 @@ class Yspay implements Settings {
      * @param $data 传入需要加密的证件号码
      * @return string 返回加密后的字符串
      */
-    protected function ECBEncrypt($data, $key) {
+    private function ECBEncrypt($data, $key) {
         $encrypted = openssl_encrypt($data, 'DES-ECB', $key, 1);
         return base64_encode($encrypted);
     }
@@ -354,7 +355,7 @@ class Yspay implements Settings {
      * @param $data 传入需要解密的字符串
      * @return string 返回解密后的证件号码
      */
-    protected function doECBDecrypt($data, $key) {
+    private function doECBDecrypt($data, $key) {
         $encrypted = base64_decode($data);
         $decrypted = openssl_decrypt($encrypted, 'DES-ECB', $key, 1);
         return $decrypted;
@@ -369,7 +370,7 @@ class Yspay implements Settings {
      * @param $response_name
      * @return false|string
      */
-    protected function postUrl($url, $myParams, $response_name) {
+    private function postUrl($url, $myParams, $response_name) {
         $ch = curl_init($url);
         curl_setopt($ch, CURLOPT_POST, 1);
         curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($myParams));

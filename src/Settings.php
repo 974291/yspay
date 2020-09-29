@@ -8,5 +8,5 @@
 namespace aler\Yspay;
 
 interface Settings{
-    public function Config();
+    public function Config(): array;
 }
