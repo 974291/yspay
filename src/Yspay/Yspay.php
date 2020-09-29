@@ -37,12 +37,12 @@ class Yspay implements Settings {
     /**
      * 商户号
      */
-    const SELLER_ID = '826494453990016';
+    const SELLER_ID = '';
 
     /**
      * 商户名
      */
-    const SELLER_NAME = '河南豫享购网络科技有限公司';
+    const SELLER_NAME = '';
 
     /**
      * 默认编码
@@ -92,7 +92,7 @@ class Yspay implements Settings {
     /**
      * 小程序appid
      */
-    protected $appid = 'wx8e7d1d6b651b2168';
+    protected $appid = '';
 
 
 
