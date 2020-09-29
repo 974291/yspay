@@ -6,7 +6,7 @@
  * Time: 13:38
  */
 
-namespace aler\Yspay;
+namespace Aler\Yspay;
 
 class Yspay implements Settings {
 

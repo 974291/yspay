@@ -5,7 +5,7 @@
  * Date: 2020/9/28
  * Time: 13:47
  */
-namespace aler\Yspay;
+namespace Aler\Yspay;
 
 interface Settings{
     public function Config(): array;
