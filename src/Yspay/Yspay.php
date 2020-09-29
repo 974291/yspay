@@ -64,6 +64,7 @@ class Yspay implements Settings {
      */
     const CERT = '/data/wwwroot/dev.yxgzhsh.com/web/extend/Ysepay/certs/businessgate.cer';
 
+    
     /**
      * 商户key
      */
