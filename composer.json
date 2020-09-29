@@ -21,9 +21,6 @@
     },
     "minimum-stability": "dev",
     "extra": {
-        "branch-alias": {
-            "dev-master": "1.0-dev"
-        },
         "thanks": {
             "name": "aler.gl",
             "url": "https://github.com/974291/yspay"
