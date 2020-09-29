@@ -16,7 +16,7 @@
     },
     "autoload": {
         "psr-4": {
-            "aler\\yspay\\": "src/Yspay"
+            "Aler\\Yspay\\": "src"
         }
     },
     "minimum-stability": "dev",

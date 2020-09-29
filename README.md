@@ -2,7 +2,7 @@
 
 基于Thinkphp5.1+ 银盛支付系统
 
-> 以下类库都在`\\aler\\yspay`命名空间下
+> 以下类库都在`\\Aler\\Yspay`命名空间下
 
 ## new Yspay
 
