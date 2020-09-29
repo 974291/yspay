@@ -1,22 +1,31 @@
 {
     "name": "aler/yspay",
+    "type": "library",
     "description": "The yspay Helper Package",
-    "license": "Apache-2.0",
+    "keywords": ["yspay", "pay"],
+    "homepage": "",
+    "license": "MIT",
     "authors": [
         {
-            "name": "aler",
+            "name": "aler.gl",
             "email": "974291@qq.com"
         }
     ],
     "require": {
         "php": ">=5.6.0"
-    },    
+    },
     "autoload": {
-        "psr-4": {
-            "aler\\yxpay": "src"
+        "psr-4": { "aler\\yxpay\\": "" },
+        "files": [ "src/Yspay.php" ]
+    },
+    "minimum-stability": "dev",
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0.0-dev"
         },
-        "files": [
-            "src/Yspay.php"
-        ]
+        "thanks": {
+            "name": "aler.gl",
+            "url": "https://github.com/974291/yspay"
+        }
     }
 }
