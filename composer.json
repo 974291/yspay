@@ -28,5 +28,11 @@
             "name": "aler.gl",
             "url": "https://github.com/974291/yspay"
         }
+    },
+    "repositories": {
+        "packagist": {
+            "type": "composer",
+            "url": "https://packagist.phpcomposer.com"
+        }
     }
 }
