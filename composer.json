@@ -12,7 +12,8 @@
         }
     ],
     "require": {
-        "php": ">=5.6.0"
+        "php": ">=5.6.0",
+        "aler/yspay": "dev-master"
     },
     "autoload": {
         "psr-4": {
