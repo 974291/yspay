@@ -55,46 +55,32 @@ class Yspay implements Settings {
      */
     private $appid = '';
 
-    /**
-     * 正式环境请求地址
-     */
-    const PAYURL = 'https://qrcode.ysepay.com/gateway.do';
-
-    /**
-     * 默认编码
-     */
-    const CHARSET = 'UTF-8';
-
-    /**
-     * 默认加密方式RSA
-     */
-    const SIGN_TYPE = 'RSA';
-
-    /**
-     * 接口版本
-     */
-    const VERSION = '3.0';
 
     // 构造初始化
-    public function __construct($config) {
+    public function __construct() {
         date_default_timezone_set('PRC');
-        if (!empty($config)) {
-            $this->method        = $config['method'];
-            $this->notify_url    = $config['url'];
-            $this->seller_id     = $config['seller_id'];
-            $this->seller_name   = $config['seller_name'];
-            $this->cert          = $config['cert'];
-            $this->key           = $config['key'];
-            $this->key_password  = $config['key_password'];
-            $this->business_code = $config['business_code'];
-            $this->appid         = $config['appid'];
-        }
 
-        throw new \Exception('Yspay Error');
+        if(false === $this->setConfig()){
+            throw new \Exception('Yspay Error');
+        }
     }
 
-    public function Config(): array {
-        // TODO: Implement Config() method.
+    public function setConfig($config) {
+        if (empty($config)) {
+            return false;
+        }
+
+        $this->method        = $config['method'];
+        $this->notify_url    = $config['url'];
+        $this->seller_id     = $config['seller_id'];
+        $this->seller_name   = $config['seller_name'];
+        $this->cert          = $config['cert'];
+        $this->key           = $config['key'];
+        $this->key_password  = $config['key_password'];
+        $this->business_code = $config['business_code'];
+        $this->appid         = $config['appid'];
+
+        return true;
     }
 
 
@@ -168,7 +154,7 @@ class Yspay implements Settings {
      * @DateTime 2020-07-28
      * ysepay.single.division.online.query
      */
-    function division_query() {
+    public function division_query() {
         $myParams                = [];
         $myParams['charset']     = self::CHARSET;
         $myParams['method']      = $this->method;
@@ -233,7 +219,7 @@ class Yspay implements Settings {
         $data = trim($url, '&');
         //var_dump($data);
         trace('return|data:' . $data . '|sign:' . $sign, 'paylog');
-        if (true == $this->signCheck($sign, $data)) {
+        if (true === $this->signCheck($sign, $data)) {
             echo "验证签名成功!";
         }
 
@@ -260,7 +246,7 @@ class Yspay implements Settings {
         $data = trim($url, '&');
 
         //验证签名，写入日志
-        if (true == $this->signCheck($sign, $data)) {
+        if (true === $this->signCheck($sign, $data)) {
             trace('Verify success!|notify|:' . $data . '|sign:' . $sign, 'pay');
         }
 
